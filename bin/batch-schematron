@@ -1,0 +1,9 @@
+#!/bin/bash
+PROJECT=`cd $1; pwd`
+ROOT=`cd $(dirname $(realpath -s $0))/..; pwd`
+
+bin/saxon \
+    -xsl:$ROOT/schemas/xslt/batch-schematron-validate.xslt \
+    -s:$SCHEMA \
+    sources-base-dir-uri=file:$PROJECT/target \
+	reports-base-dir-uri=file:$PROJECT/report
