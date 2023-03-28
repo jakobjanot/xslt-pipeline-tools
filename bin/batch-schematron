@@ -8,8 +8,8 @@ if test -z "$SCHXSLT"; then
     SCHXSLT="${SCHXSLT_DEFAULT}"
 fi
 
-if test -z $SCHEMA; then
-    echo "Error: SCHEMA not set"
+if test -z $SCH; then
+    echo "Error: SCH not set"
     exit 1
 fi
 
@@ -20,7 +20,7 @@ fi
 
 bin/saxon \
     -xsl:$ROOT/xslt/batch-schematron-validate.xslt \
-    -s:$SCHEMA \
+    -s:$SCH \
     sources-base-dir-uri=file:$PROJECT/target \
     reports-base-dir-uri=file:$PROJECT/report \
     schxslt-uri=file:$SCHXSLT

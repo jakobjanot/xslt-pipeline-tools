@@ -1,0 +1,26 @@
+#!/bin/bash
+PROJECT=`cd $1; pwd`
+ROOT=`cd $(dirname $(realpath -s $0))/..; pwd`
+RNGXSL_DEFAULT=$ROOT/lib/schxslt/2.0/pipeline-for-svrl.xsl
+
+if test -z "$RNGXSL"; then
+    echo "Warning: SCHXLT not set, using default: ${RNGXSL_DEFAULT}"
+    RNGXSL="${RNGXSL_DEFAULT}"
+fi
+
+if test -z $RNG; then
+    echo "Error: RNG not set"
+    exit 1
+fi
+
+if test -z $PROJECT; then
+    echo "Error: PROJECT not set"
+    exit 1
+fi
+
+bin/saxon \
+    -xsl:$ROOT/xslt/batch-relaxng-validate.xslt \
+    -s:$RNG \
+    sources-base-dir-uri=file:$PROJECT/target \
+    reports-base-dir-uri=file:$PROJECT/report \
+    rngxsl-uri=file:$RNGXSL
