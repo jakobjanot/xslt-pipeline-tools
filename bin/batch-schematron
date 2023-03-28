@@ -1,9 +1,16 @@
 #!/bin/bash
 PROJECT=`cd $1; pwd`
 ROOT=`cd $(dirname $(realpath -s $0))/..; pwd`
+SCHXSLT_DEFAULT=$ROOT/lib/schxslt/xslt/2.0/pipeline-for-svrl.xsl
+
+if test -z "$SCHXSLT"; then
+    echo "Warning: SCHXLT not set, using default: ${SCHXSLT_DEFAULT}"
+    SCHXSLT="${SCHXSLT_DEFAULT}"
+fi
 
 bin/saxon \
     -xsl:$ROOT/schemas/xslt/batch-schematron-validate.xslt \
     -s:$SCHEMA \
     sources-base-dir-uri=file:$PROJECT/target \
-	reports-base-dir-uri=file:$PROJECT/report
+	reports-base-dir-uri=file:$PROJECT/report \
+    schxslt:$SCHXSLT

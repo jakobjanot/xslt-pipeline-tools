@@ -1,3 +1,21 @@
 #!/bin/bash
 SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
-java -jar $SCRIPT_DIR/../lib/saxon/Saxon-HE-10.8.jar "$@"
+SAXON_HOME_DEFAULT=`readlink -f "${SCRIPT_DIR}/../lib/saxon"`
+
+if test -z "$SAXON_HOME"; then
+    echo "Warning: SAXON_HOME not set, using default: ${SAXON_HOME_DEFAULT}"
+    SAXON_HOME="${SAXON_HOME_DEFAULT}"
+fi
+
+for f in \
+    "${SAXON_HOME}"/saxon9?e.jar \
+    "${SAXON_HOME}"/[Ss]axon-?[eE]-?*.?*.jar; do
+    [ -f "${f}" ] && SAXON_JAR="${f}"
+done
+
+if test -z "$SAXON_JAR"; then
+    echo "Error: Saxon jar not found in ${SAXON_HOME}"
+    exit 1
+fi
+
+java -jar $SAXON_JAR "$@"
