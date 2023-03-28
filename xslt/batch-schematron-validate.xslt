@@ -7,6 +7,7 @@
 
     <xsl:param name="sources-base-dir-uri" required="yes" as="xs:anyURI"/>
     <xsl:param name="reports-base-dir-uri" required="yes" as="xs:anyURI"/>
+    <xsl:param name="schxslt-uri" required="yes" as="xs:anyURI"/>
     
     <xsl:template match="sch:schema">
         <xsl:variable name="compiled-schematron-stylesheet">
@@ -14,7 +15,7 @@
                 transform(
                     map{
                         'source-node': .,
-                        'stylesheet-location': '../lib/schxslt/xslt/2.0/pipeline-for-svrl.xsl',
+                        'stylesheet-location': $schxslt-uri,
                         'stylesheet-params': map{},
                         'enable-messages': true(),
                         'cache': true()
@@ -50,7 +51,7 @@
                     transform(
                         map{
                             'source-node': $svrl-report,
-                            'stylesheet-location': 'svrl-to-html.xslt',
+                            'stylesheet-location': 'schematron-validation-report-to-html.xslt',
                             'stylesheet-params': map{},
                             'enable-messages': true(),
                             'cache': true()
