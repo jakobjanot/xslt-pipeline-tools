@@ -18,7 +18,7 @@ if test -z $PROJECT; then
     exit 1
 fi
 
-bin/saxon \
+$ROOT/bin/saxon \
     -xsl:$ROOT/xslt/batch-schematron-validate.xslt \
     -s:$SCH \
     sources-base-dir-uri=file:$PROJECT/target \

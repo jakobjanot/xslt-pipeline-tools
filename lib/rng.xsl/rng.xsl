@@ -24,13 +24,14 @@
    <import href="rng-simplify.xsl"/>
    <include href="rng-xsd.xsl"/>
 
-   <param name="r:schema" as="document-node()?"/>
+   <param name="schema" as="node()?"/>
 
    <key name="r:define" match="define" use="@name"/>
 
-   <template match="/ | @* | node()" mode="r:main" name="r:main">
-      <param name="schema" select="$r:schema" as="document-node()"/>
+   <template match="/ | @* | node()">
+      <param name="schema" select="$schema" as="node()"/>
       <param name="instance" select="." as="node()"/>
+      <message expand-text="true">Validating {string($instance)} against {string($schema)}</xsl:message>
 
       <variable name="simplified" as="node()">
          <apply-templates select="$schema" mode="s:main"/>

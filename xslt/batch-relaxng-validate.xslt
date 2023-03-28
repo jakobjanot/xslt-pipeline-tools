@@ -10,9 +10,9 @@
     <xsl:param name="rngxsl-uri" required="yes" as="xs:anyURI"/>
     
     <xsl:template match="rng:schema">
-        <xsl:variable name="schema" as="document-node()" select="."/>
+        <xsl:variable name="schema" as="node()" select="."/>
         <xsl:variable name="source-uris" as="xs:anyURI*" select="uri-collection($sources-base-dir-uri || '?select=*.xml;recurse=yes')"/>
-        <xsl:message expand-text="yes">Running Schematron validation of {count($source-uris)} files ...</xsl:message>
+        <xsl:message expand-text="yes">Running relaxng validation of {count($source-uris)} files ...</xsl:message>
         
         <xsl:for-each select="$source-uris">
             <xsl:variable name="source-uri" as="xs:anyURI" select="."/>
@@ -26,8 +26,10 @@
                     transform(
                         map{
                             'source-location': $source-uri,
-                            'stylesheet-node': $rngxsl-uri,
-                            'stylesheet-params': map{},
+                            'stylesheet-location': $rngxsl-uri,
+                            'stylesheet-params': map{
+                                'schema': $schema
+                            },
                             'enable-messages': true(),
                             'cache': true()
                         })?output"/>"/>
