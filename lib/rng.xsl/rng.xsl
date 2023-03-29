@@ -23,16 +23,15 @@
 
    <import href="rng-simplify.xsl"/>
    <include href="rng-xsd.xsl"/>
-
-   <param name="schema" as="node()?"/>
+   
+   <param name="r:schema" as="document-node()"/>
 
    <key name="r:define" match="define" use="@name"/>
 
-   <template match="/ | @* | node()">
-      <param name="schema" select="$schema" as="node()"/>
-      <param name="instance" select="." as="node()"/>
-      <message expand-text="true">Validating {string($instance)} against {string($schema)}</xsl:message>
-
+   <template match="/ | node() | @*">
+      <variable name="schema" select="$r:schema" as="document-node()"/>
+      <variable name="instance" as="node()" select="."/>
+      
       <variable name="simplified" as="node()">
          <apply-templates select="$schema" mode="s:main"/>
       </variable>
@@ -260,7 +259,7 @@
          and namespace-uri($n) eq @ns"/>
 
       <choose>
-         <when test="except and $ns-matches">
+         <when test="./except and $ns-matches">
             <variable name="except-result" as="xs:boolean">
                <apply-templates select="except" mode="#current">
                   <with-param name="n" select="$n"/>

@@ -3,17 +3,18 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:rng="http://relaxng.org/ns/structure/1.0"
     exclude-result-prefixes="xs"
-    version="3.1">
+    version="2.0">
 
     <xsl:param name="sources-base-dir-uri" required="yes" as="xs:anyURI"/>
     <xsl:param name="reports-base-dir-uri" required="yes" as="xs:anyURI"/>
     <xsl:param name="rngxsl-uri" required="yes" as="xs:anyURI"/>
     
-    <xsl:template match="rng:schema">
-        <xsl:variable name="schema" as="node()" select="."/>
-        <xsl:variable name="source-uris" as="xs:anyURI*" select="uri-collection($sources-base-dir-uri || '?select=*.xml;recurse=yes')"/>
-        <xsl:message expand-text="yes">Running relaxng validation of {count($source-uris)} files ...</xsl:message>
-        
+    <xsl:template match="/" priority="1">
+        <xsl:param name="source-uris" as="xs:anyURI*" select="uri-collection($sources-base-dir-uri || '?select=*.xml;recurse=yes')"/>
+        <xsl:variable name="schema" as="document-node()" select="."/>
+        <xsl:variable name="schema-uri" as="xs:anyURI" select="base-uri(.)"/>
+        <xsl:message expand-text="yes">Running relaxng validation of {count($source-uris)} files with {$schema-uri}...</xsl:message>
+
         <xsl:for-each select="$source-uris">
             <xsl:variable name="source-uri" as="xs:anyURI" select="."/>
             <xsl:variable name="report-uri" as="xs:anyURI" select="xs:anyURI(concat(string($reports-base-dir-uri), substring-after(string($source-uri), string($sources-base-dir-uri))))"/>
@@ -28,11 +29,11 @@
                             'source-location': $source-uri,
                             'stylesheet-location': $rngxsl-uri,
                             'stylesheet-params': map{
-                                'schema': $schema
+                                QName('http://maxtoroq.github.io/rng.xsl', 'schema'): $schema
                             },
                             'enable-messages': true(),
                             'cache': true()
-                        })?output"/>"/>
+                        })?output"/>
             </xsl:variable>
             <xsl:result-document href="{$report-uri}" indent="yes">
                 <xsl:value-of select="$report"/>
