@@ -43,7 +43,7 @@
         <xsl:param name="debug-dir-uri" as="xs:anyURI" required="yes"/>
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
-        <xsl:result-document href="{$output-uri}">
+        <xsl:result-document href="{$output-uri}" method="text">
             <xsl:call-template name="transform-next-step">
                 <xsl:with-param name="input" select="doc($input-uri)"/>
                 <xsl:with-param name="stylesheet-uris" select="$stylesheet-uris"/>
@@ -81,6 +81,7 @@
         <xsl:if test="$verbose = true()">
             <xsl:message expand-text="yes">{$current-stylesheet-number}. Stylesheet {$current-stylesheet-name} applied</xsl:message>
         </xsl:if>
+        <xsl:variable name="is-last" as="xs:boolean" select="count($remaining-stylesheet-uris) = 0"/>
         <xsl:variable name="output">
             <xsl:sequence select="
                 transform(
@@ -89,7 +90,8 @@
                     'stylesheet-location': $current-stylesheet-uri,
                     'stylesheet-params': map{},
                     'enable-messages': true(),
-                    'cache': true()
+                    'cache': true(),
+                    'delivery-format': if ($is-last) then 'serialized' else 'document'
                 })?output"/>
         </xsl:variable>
         <xsl:if test="$debug = true()">
@@ -100,7 +102,7 @@
             </xsl:result-document>
         </xsl:if>
         <xsl:choose>
-            <xsl:when test="count($remaining-stylesheet-uris) = 0">
+            <xsl:when test="$is-last">
                 <xsl:sequence select="$output"/>
             </xsl:when>
             <xsl:otherwise>
