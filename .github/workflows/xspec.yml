@@ -17,4 +17,4 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
     - name: Run XSpec tests
-      run: bin/bash-xspec xspec
+      run: bin/batch-xspec xspec
