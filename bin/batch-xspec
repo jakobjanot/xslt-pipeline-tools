@@ -1,12 +1,14 @@
 #!/bin/bash
 
+SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
+
 set -e
 for xspec in $( find $1 -type f -name '*.xspec' ); do
   echo "################################################"
   printf "\n"
   echo "TEST $(basename -- $xspec)"
   printf "\n"
-  /bin/bash $XSPEC_HOME/bin/xspec.sh -e -t $xspec || exitcode=$?
+  /bin/bash $SCRIPT_DIR/xspec -e -t $xspec || exitcode=$?
   printf "\n\n"
 done
 

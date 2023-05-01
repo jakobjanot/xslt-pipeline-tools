@@ -1,24 +1,8 @@
 #!/bin/bash
+set -e
 SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
 
-XSPEC_HOME=`readlink -f "${SCRIPT_DIR}/../lib/xspec-2.2.4"`
+export XSPEC_HOME=`readlink -f "${SCRIPT_DIR}/../lib/xspec-2.2.4"`
+export SAXON_CP=`readlink -f "${SCRIPT_DIR}/../lib/saxon/Saxon-HE-10.8.jar"`
 
-SAXON_HOME_DEFAULT=`readlink -f "${SCRIPT_DIR}/../lib/saxon"`
-
-if test -z "$SAXON_HOME"; then
-    echo "Warning: SAXON_HOME not set, using default: ${SAXON_HOME_DEFAULT}"
-    SAXON_HOME="${SAXON_HOME_DEFAULT}"
-fi
-
-for f in \
-    "${SAXON_HOME}"/saxon9?e.jar \
-    "${SAXON_HOME}"/[Ss]axon-?[eE]-?*.?*.jar; do
-    [ -f "${f}" ] && SAXON_CP="${f}"
-done
-
-if test -z "$SAXON_CP"; then
-    echo "Error: Saxon jar not found in ${SAXON_HOME}"
-    exit 1
-fi
-
-$XSPEC_HOME/bin/xspec.sh -cp "${SAXON_CP}" "$@"
+$XSPEC_HOME/bin/xspec.sh "$@"

@@ -1,5 +1,5 @@
 <!-- XSpec test -->
-<x:description stylesheet="xslt-cascade.xsl" xmlns:x="http://www.jenitennison.com/xslt/xspec">
+<x:description stylesheet="../xslt/xslt-cascade.xslt" xmlns:x="http://www.jenitennison.com/xslt/xspec">
     <x:scenario label="batch-transform-with-manifest">
         <x:call template="batch-transform-with-manifest">
             <x:param name="inputs-base-dir-uri" select="resolve-uri(., 'fixtures/inputs')"/>
@@ -9,6 +9,6 @@
             <x:param name="verbose" select="false()"/>
             <x:param name="debug" select="false()"/>
         </x:call>
-        <x:expect label="batch-transform-with-manifest" select="'xslt-cascade.xsl'"/>
+        <x:expect label="batch-transform-with-manifest"/>
     </x:scenario>
 </x:description>
