@@ -7,15 +7,13 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - name: Build the XSpec Docker image
-      run: docker build . --file Dockerfile --tag xspec:latest
-    
-    - name: Run XSpec tests within Docker image
-      run: docker run xspec -t xspec
+    - name: Setup java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+    - name: Run XSpec tests
+      run: bin/bash-xspec xspec
