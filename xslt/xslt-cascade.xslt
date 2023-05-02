@@ -104,7 +104,7 @@
             </xsl:call-template>
         </xsl:variable>
         <xsl:call-template name="transform">
-            <xsl:with-param name="input" select="doc($input)"/>
+            <xsl:with-param name="input" select="$input"/>
             <xsl:with-param name="stylesheet-uris" select="$stylesheet-uris"/>
             <xsl:with-param name="debug-dir-uri" select="$debug-dir-uri"/>
             <xsl:with-param name="verbose" select="$verbose"/>
@@ -147,7 +147,7 @@
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template name="transform-next-step" as="document-node()" visibility="private">
+    <xsl:template name="transform-next-step" as="node()" visibility="private">
         <xsl:param name="input" as="node()" required="yes"/>
         <xsl:param name="stylesheet-uris" as="xs:anyURI+" required="yes"/>
         <xsl:param name="step" as="xs:integer?" required="yes"/>
@@ -162,6 +162,7 @@
             <xsl:message expand-text="yes">{$current-stylesheet-number}. Stylesheet {$current-stylesheet-name} applied</xsl:message>
         </xsl:if>
         <xsl:variable name="is-last" as="xs:boolean" select="count($remaining-stylesheet-uris) = 0"/>
+        <xsl:variable name="delivery-format" as="xs:string" select="if ($is-last) then 'document' else 'document'"/>
         <xsl:variable name="output">
             <xsl:sequence select="
                 transform(
@@ -171,7 +172,7 @@
                     'stylesheet-params': map{},
                     'enable-messages': true(),
                     'cache': true(),
-                    'delivery-format': if ($is-last) then 'serialized' else 'document'
+                    'delivery-format': $delivery-format
                 })?output"/>
         </xsl:variable>
         <xsl:if test="$debug = true()">

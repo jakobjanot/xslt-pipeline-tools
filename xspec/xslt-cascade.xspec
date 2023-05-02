@@ -1,7 +1,7 @@
 <x:description xmlns:x="http://www.jenitennison.com/xslt/xspec" 
     stylesheet="../xslt/xslt-cascade.xslt" 
     run-as="external">
-    <x:scenario label="batch-transform-with-manifest">
+    <x:scenario label="Template batch-transform-with-manifest">
         <x:call template="batch-transform-with-manifest">
             <x:param name="inputs-base-dir-uri" select="resolve-uri('../xspec/fixtures/inputs', $x:stylesheet-uri)"/>
             <x:param name="outputs-base-dir-uri" select="resolve-uri('../xspec/tmp/outputs', $x:stylesheet-uri)"/>
@@ -10,6 +10,53 @@
             <x:param name="verbose" select="false()"/>
             <x:param name="debug" select="false()"/>
         </x:call>
-        <x:expect label="batch-transform-with-manifest"/>
+        <x:expect/>
+    </x:scenario>
+
+    <x:scenario label="Template batch-transform">
+        <x:call template="batch-transform">
+            <x:param name="inputs-base-dir-uri" select="resolve-uri('../xspec/fixtures/inputs', $x:stylesheet-uri)"/>
+            <x:param name="outputs-base-dir-uri" select="resolve-uri('../xspec/tmp/outputs', $x:stylesheet-uri)"/>
+            <x:param name="stylesheet-uris">
+                <x:sequence>
+                    <x:uri><x:value-of select="resolve-uri('../xslt/lala.xslt', $stylesheet-uri)"/></x:uri>
+                    <x:uri><x:value-of select="resolve-uri('../xslt/baba.xslt', $stylesheet-uri)"/></x:uri>
+                </x:sequence>
+            </x:param>
+            <x:param name="debug-base-dir-uri" select="resolve-uri('../xspec/tmp/debug', $x:stylesheet-uri)"/>
+            <x:param name="verbose" select="false()"/>
+            <x:param name="debug" select="false()"/>
+        </x:call>
+        <x:expect/>
+    </x:scenario>
+
+    <x:scenario label="Template parse-manifest-uri">
+        <x:call template="parse-manifest-uri">
+            <x:param name="manifest-uri" select="resolve-uri('../xspec/fixtures/manifests/lala-baba.xml', $x:stylesheet-uri)"/>
+        </x:call>
+        <x:expect select="(resolve-uri('../xspec/fixtures/xslts/lala.xslt', $x:stylesheet-uri), resolve-uri('../xspec/fixtures/xslts/baba.xslt', $x:stylesheet-uri))"/>
+    </x:scenario>
+
+    <x:scenario label="Template transform-uri-with-manifest">
+        <x:call template="transform-uri-with-manifest">
+            <x:param name="input-uri" select="resolve-uri('../xspec/fixtures/inputs/hello-world.xml', $x:stylesheet-uri)"/>
+            <x:param name="output-uri" select="resolve-uri('../xspec/tmp/outputs/hello-world.xml', $x:stylesheet-uri)"/>
+            <x:param name="manifest-uri" select="resolve-uri('../xspec/fixtures/manifests/lala-baba.xml', $x:stylesheet-uri)"/>
+            <x:param name="debug-dir-uri" select="resolve-uri('../xspec/tmp/debug/hello-world', $x:stylesheet-uri)"/>
+            <x:param name="verbose" select="false()"/>
+            <x:param name="debug" select="false()"/>
+        </x:call>
+        <x:expect/>
+    </x:scenario>
+
+    <x:scenario label="Template transform-with-manifest">
+        <x:call template="transform-with-manifest" preserve-space="*">
+            <x:param name="input" select="doc(resolve-uri('../xspec/fixtures/inputs/hello-world.xml', $x:stylesheet-uri))"/>
+            <x:param name="manifest-uri" select="resolve-uri('../xspec/fixtures/manifests/lala-baba.xml', $x:stylesheet-uri)"/>
+            <x:param name="debug-dir-uri" select="resolve-uri('../xspec/tmp/debug/hello-world', $x:stylesheet-uri)"/>
+            <x:param name="verbose" select="false()"/>
+            <x:param name="debug" select="false()"/>
+        </x:call>
+        <x:expect href="fixtures/outputs/hello-world.xml"/>
     </x:scenario>
 </x:description>

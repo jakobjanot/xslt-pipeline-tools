@@ -3,6 +3,7 @@
 SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
 
 set -e
+exitcode=0
 for xspec in $( find $1 -type f -name '*.xspec' ); do
   echo "################################################"
   printf "\n"
