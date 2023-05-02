@@ -18,3 +18,9 @@ jobs:
         java-version: '11'
     - name: Run XSpec tests
       run: bin/batch-xspec xspec
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          xspec/**/*-junit.xml

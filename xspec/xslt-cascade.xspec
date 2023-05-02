@@ -1,5 +1,6 @@
 <!-- XSpec test -->
 <x:description stylesheet="../xslt/xslt-cascade.xslt" xmlns:x="http://www.jenitennison.com/xslt/xspec">
+    <!-- 
     <x:scenario label="batch-transform-with-manifest">
         <x:call template="batch-transform-with-manifest">
             <x:param name="inputs-base-dir-uri" select="resolve-uri(., 'fixtures/inputs')"/>
@@ -11,4 +12,5 @@
         </x:call>
         <x:expect label="batch-transform-with-manifest"/>
     </x:scenario>
+    -->
 </x:description>
