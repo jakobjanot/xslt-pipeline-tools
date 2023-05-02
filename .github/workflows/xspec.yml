@@ -17,7 +17,7 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
     - name: Run XSpec tests
-      run: bin/batch-xspec xspec
+      run: bin/batch-xspec-junit xspec
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
