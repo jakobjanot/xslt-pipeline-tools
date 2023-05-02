@@ -3,6 +3,6 @@ set -e
 SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
 
 export XSPEC_HOME=`readlink -f "${SCRIPT_DIR}/../lib/xspec-2.2.4"`
-export SAXON_CP=`readlink -f "${SCRIPT_DIR}/../lib/saxon/Saxon-HE-10.8.jar"`
+export SAXON_CP=`readlink -f "${SCRIPT_DIR}/../lib/saxon/Saxon-HE-10.8.jar"`:`readlink -f "${SCRIPT_DIR}/../lib/saxon/xml-resolver-1.2.jar"`
 
 $XSPEC_HOME/bin/xspec.sh "$@"

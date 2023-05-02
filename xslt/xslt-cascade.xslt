@@ -44,8 +44,8 @@
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
         <xsl:variable name="stylesheet-uris" as="xs:anyURI*">
-            <xsl:call-template name="parse-manifest">
-                <xsl:with-param name="manifest" select="."/>
+            <xsl:call-template name="parse-manifest-uri">
+                <xsl:with-param name="manifest-uri" select="$manifest-uri"/>
             </xsl:call-template>
         </xsl:variable>
         <xsl:call-template name="batch-transform">
@@ -65,7 +65,7 @@
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
         <xsl:call-template name="transform-next-step">
-            <xsl:with-param name="input" select="doc($input)"/>
+            <xsl:with-param name="input" select="$input"/>
             <xsl:with-param name="stylesheet-uris" select="$stylesheet-uris"/>
             <xsl:with-param name="step" select="1"/>
             <xsl:with-param name="debug-dir-uri" select="$debug-dir-uri"/>
