@@ -1,4 +1,4 @@
-name: XSpec
+name: CI
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   xspec:
+    name: XSpec
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
