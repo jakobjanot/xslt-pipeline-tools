@@ -5,13 +5,11 @@ PROJECT=`cd $1; pwd`
 [ "$CLEANUP" != "true" ] && CLEANUP="false" # Cleanup results and reports? true/false
 ROOT=`cd $(dirname $(realpath -s $0))/..; pwd`
 
-[ $CLEANUP == 'true' ] && /bin/bash $ROOT/bin/cleanup $PROJECT
-
-export PARSER_VERSION=0.0.0
+[ "$CLEANUP" == 'true' ] && /bin/bash $ROOT/bin/cleanup $PROJECT
 
 time \
     $ROOT/bin/saxon \
-        -xsl:$ROOT/cascade-batch-runner.xslt \
+        -xsl:$ROOT/xslt/cascade-batch-runner.xslt \
         -s:$MANIFEST \
         inputs-base-dir-uri=file:$PROJECT/source \
         outputs-base-dir-uri=file:$PROJECT/target \
