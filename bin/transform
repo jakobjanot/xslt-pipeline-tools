@@ -7,12 +7,11 @@ ROOT=`cd $(dirname $(realpath -s $0))/..; pwd`
 
 [ "$CLEANUP" == 'true' ] && /bin/bash $ROOT/bin/cleanup $PROJECT
 
-time \
-    $ROOT/bin/saxon \
-        -xsl:$ROOT/xslt/cascade-batch-runner.xslt \
-        -s:$MANIFEST \
-        inputs-base-dir-uri=file:$PROJECT/source \
-        outputs-base-dir-uri=file:$PROJECT/target \
-        debug-base-dir-uri=file:$PROJECT/tmp/debug \
-        debug=$DEBUG \
-        verbose=$VERBOSE
+$ROOT/bin/saxon \
+    -xsl:$ROOT/xslt/cascade-batch-runner.xslt \
+    -s:$MANIFEST \
+    inputs-base-dir-uri=file:$PROJECT/inputs \
+    outputs-base-dir-uri=file:$PROJECT/outputs \
+    debug-base-dir-uri=file:$PROJECT/debug \
+    debug=$DEBUG \
+    verbose=$VERBOSE

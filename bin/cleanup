@@ -1,0 +1,12 @@
+#!/bin/bash
+PROJECT=`cd $1; pwd`
+
+echo Cleaning up $PROJECT/debug
+rm -rf $PROJECT/debug/*
+
+echo Cleaning up $PROJECT/outputs
+rm -rf $PROJECT/outputs/*
+
+echo Cleaning up $PROJECT/report
+rm -rf $PROJECT/report/*
+mkdir -p $PROJECT/report/relaxng-validation $PROJECT/report/sch-validation $PROJECT/report/diff-validation

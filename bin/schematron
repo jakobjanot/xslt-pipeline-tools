@@ -21,6 +21,6 @@ fi
 bin/saxon \
     -xsl:$ROOT/xslt/batch-schematron-validate.xslt \
     -s:$SCHEMA \
-    sources-base-dir-uri=file:$PROJECT/target \
+    sources-base-dir-uri=file:$PROJECT/outputs \
     reports-base-dir-uri=file:$PROJECT/report \
     schxslt-uri=file:$SCHXSLT

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    exclude-result-prefixes="xs"
+    xmlns:m="http://ns.karnovgroup.com/pipeline"
+    exclude-result-prefixes="xs m"
     version="3.1">
 
     <xsl:template name="batch-transform" visibility="public">
@@ -12,16 +13,22 @@
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
         <xsl:variable name="input-uris" as="xs:anyURI*" select="uri-collection($inputs-base-dir-uri || '?select=*.xml;recurse=yes')"/>
-        <xsl:message expand-text="yes">Transforming {count($input-uris)} files with a cascade of {count($stylesheet-uris)} stylesheets...</xsl:message>
+        <xsl:if test="$verbose">
+            <xsl:message expand-text="yes">Transforming {count($input-uris)} files with a cascade of {count($stylesheet-uris)} stylesheets...</xsl:message>
+        </xsl:if>
         <xsl:for-each select="$input-uris">
             <xsl:variable name="input-uri" as="xs:anyURI" select="."/>
             <xsl:variable name="output-uri" as="xs:anyURI" select="xs:anyURI(concat(string($outputs-base-dir-uri), substring-after(string($input-uri), string($inputs-base-dir-uri))))"/>
             <xsl:choose>
                 <xsl:when test="doc-available($output-uri)">
-                    <xsl:message expand-text="yes">{position()} Skipping {$input-uri} → {$output-uri}. Output file already exists.</xsl:message>
+                    <xsl:if test="$verbose">
+                        <xsl:message expand-text="yes">{position()} Skipping {$input-uri} → {$output-uri}. Output file already exists.</xsl:message>
+                    </xsl:if>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:message expand-text="yes">{position()} Transforming {$input-uri} → {$output-uri}</xsl:message>
+                    <xsl:if test="$verbose">
+                        <xsl:message expand-text="yes">{position()} Transforming {$input-uri} → {$output-uri}</xsl:message>
+                    </xsl:if>
                     <xsl:call-template name="transform-uri">
                         <xsl:with-param name="input-uri" select="$input-uri"/>
                         <xsl:with-param name="output-uri" select="$output-uri"/>
@@ -33,7 +40,6 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
-        <!--<xsl:sequence select="uri-collection($outputs-base-dir-uri || '?select=**/*.xml;recurse=yes')"/>-->
     </xsl:template>
 
     <xsl:template name="batch-transform-with-manifest" visibility="public">
@@ -44,7 +50,7 @@
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
         <xsl:variable name="stylesheet-uris" as="xs:anyURI*">
-            <xsl:call-template name="parse-manifest-uri">
+            <xsl:call-template name="parse-manifest">
                 <xsl:with-param name="manifest-uri" select="$manifest-uri"/>
             </xsl:call-template>
         </xsl:variable>
@@ -99,7 +105,7 @@
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
         <xsl:variable name="stylesheet-uris" as="xs:anyURI+">
-            <xsl:call-template name="parse-manifest-uri">
+            <xsl:call-template name="parse-manifest">
                 <xsl:with-param name="manifest-uri" select="$manifest-uri"/>
             </xsl:call-template>
         </xsl:variable>
@@ -119,8 +125,11 @@
         <xsl:param name="debug-dir-uri" as="xs:anyURI" required="yes"/>
         <xsl:param name="verbose" as="xs:boolean?"/>
         <xsl:param name="debug" as="xs:boolean?"/>
+        <xsl:if test="$verbose">
+            <xsl:message expand-text="yes">Manifest: {$manifest-uri}</xsl:message>
+        </xsl:if>
         <xsl:variable name="stylesheet-uris" as="xs:anyURI+">
-            <xsl:call-template name="parse-manifest-uri">
+            <xsl:call-template name="parse-manifest">
                 <xsl:with-param name="manifest-uri" select="$manifest-uri"/>
             </xsl:call-template>
         </xsl:variable>
@@ -136,15 +145,9 @@
     </xsl:template>
 
     <xsl:template name="parse-manifest" visibility="public">
-        <xsl:param name="manifest" as="node()"/>
-        <xsl:sequence select="$manifest//*/(@href|@stylesheet)/resolve-uri(., base-uri(.))"/>
-    </xsl:template>
-
-    <xsl:template name="parse-manifest-uri" visibility="public">
         <xsl:param name="manifest-uri" as="xs:anyURI"/>
-        <xsl:call-template name="parse-manifest">
-            <xsl:with-param name="manifest" select="doc($manifest-uri)"/>
-        </xsl:call-template>
+        <xsl:variable name="manifest" select="doc($manifest-uri)"/>
+        <xsl:sequence select="$manifest//m:step/@href/resolve-uri(., $manifest-uri)"/>
     </xsl:template>
 
     <xsl:template name="transform-next-step" as="node()" visibility="private">
@@ -158,7 +161,7 @@
         <xsl:variable name="current-stylesheet-uri" as="xs:anyURI" select="$stylesheet-uris[1]"/>
         <xsl:variable name="remaining-stylesheet-uris" as="xs:anyURI*" select="$stylesheet-uris[position() gt 1]"/>
         <xsl:variable name="current-stylesheet-name" select="substring-before(tokenize($current-stylesheet-uri, '/')[last()], '.xsl')"/>
-        <xsl:if test="$verbose = true()">
+        <xsl:if test="$verbose">
             <xsl:message expand-text="yes">{$current-stylesheet-number}. Stylesheet {$current-stylesheet-name} applied</xsl:message>
         </xsl:if>
         <xsl:variable name="is-last" as="xs:boolean" select="count($remaining-stylesheet-uris) = 0"/>
@@ -178,7 +181,9 @@
         <xsl:if test="$debug = true()">
             <xsl:variable name="current-debug-file-uri" select="resolve-uri(concat($step, '-', $current-stylesheet-name, '.xml'), $debug-dir-uri)" as="xs:anyURI"/>
             <xsl:result-document href="{$current-debug-file-uri}">
-                <xsl:message expand-text="yes">Dumping {$current-debug-file-uri}</xsl:message>
+                <xsl:if test="$verbose">
+                    <xsl:message expand-text="yes">Dumping {$current-debug-file-uri}</xsl:message>
+                </xsl:if>
                 <xsl:value-of select="$output"/>
             </xsl:result-document>
         </xsl:if>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+	ns="http://ns.karnovgroup.com/pipeline"
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+	<a:documentation xmlns="http://www.w3.org/1999/xhtml">
+		<h2>Manifest Documents</h2>
+		<p>Manifest documents represent lists of files to be used by a process within the XSLT pipeline.</p>
+	</a:documentation>
+
+	<start>
+		<ref name="manifest"/>
+	</start>
+
+	<define name="manifest">
+		<a:documentation xmlns="http://www.w3.org/1999/xhtml">
+			<p>manifest elements are the root of the manifest document. The contain one or more item
+				and/or processed-item elements used to represent a file to be processed in some manner.</p>
+		</a:documentation>
+		<element name="manifest">
+			<oneOrMore>
+				<choice>
+					<ref name="step"/>			
+				</choice>
+			</oneOrMore>
+		</element>
+	</define>
+
+	<define name="step">
+		<a:documentation>
+			<p xmlns="http://www.w3.org/1999/xhtml">item elements are file containers. Each element
+				references a single external file to be used for some purpose.</p>
+		</a:documentation>
+		<element name="step">
+			<ref name="href"/>
+			<optional>
+				<ref name="description"/>
+			</optional>
+		</element>
+	</define>
+
+	<define name="href">
+		<a:documentation xmlns="http://www.w3.org/1999/xhtml">
+			<p>The href attribute is used to define input files for the manifest to load.</p>
+		</a:documentation>
+		<attribute name="href">
+			<data type="anyURI"/>
+		</attribute>
+	</define>
+
+	<define name="description">
+		<a:documentation xmlns="http://www.w3.org/1999/xhtml">
+			<p>The description allows for a short piece of descriptive text to be applied to an item.</p>
+		</a:documentation>
+		<attribute name="description">
+			<text/>
+		</attribute>
+	</define>
+</grammar>
